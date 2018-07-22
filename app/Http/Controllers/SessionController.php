@@ -31,12 +31,12 @@ class SessionController extends Controller
             'captcha.captcha'=>'验证码填写不正确'
         ]);
         //>>2.审核数据
-        $row = Users::where('name',$request->name)->first();//用户数据
-        if (!$row){
-            return redirect()->back()->with('danger','用户名不存在');
-        }
-        $rows = Shops::where('id',$row->shop_id)->first();//用户商铺数据
-        if(!$row->status && $rows->status){
+        $user = Users::where('name',$request->name)->first();//用户数据
+//        if (!$row){
+//            return redirect()->back()->with('danger','用户名不存在');
+//        }
+        $shop = Shops::where('id',$user->shop_id)->first();//用户商铺数据
+        if(!$user->status || !$shop->status){
             return redirect()->back()->with('danger','对不起的,你的账户目前处于禁用,不能登录');
         }
 //        dd($row->status);

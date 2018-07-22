@@ -13,7 +13,7 @@ class CreateMenusesTable extends Migration
      */
     public function up()
     {
-        Schema::create('menus', function (Blueprint $table) {
+        Schema::create('menuses', function (Blueprint $table) {
             $table->increments('id');
             $table->string('goods_name',10)->comment('名称');
             $table->float('rating')->comment('评分');
@@ -30,6 +30,7 @@ class CreateMenusesTable extends Migration
             $table->engine='InnoDB';
             $table->timestamps();
         });
+
     }
 
     /**

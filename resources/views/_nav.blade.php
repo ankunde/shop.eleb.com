@@ -40,7 +40,7 @@
                     <ul class="dropdown-menu">
                         <li><a href="#">Action</a></li>
                         <li><a href="#">Another action</a></li>
-                        <li><a href="#">Something else here</a></li>
+                        <li><a href="{{route('menus.index')}}">小店菜品</a></li>
                         <li role="separator" class="divider"></li>
                         <li><a href="{{route('edit',[\Illuminate\Support\Facades\Auth::user()])}}">修改密码</a></li>
                         {{--{{route('admins.change',[\Illuminate\Support\Facades\Auth::user()])}}--}}
@@ -54,8 +54,8 @@
                 </li>
                 @endauth
                 @guest
-                <li><a href="">登录</a></li>
-                {{--{{route('login')}}--}}
+                <li><a href="{{route('login')}}">登录</a></li>
+
                 @endguest
                 {{--<li class="dropdown">--}}
                     {{--<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></a>--}}

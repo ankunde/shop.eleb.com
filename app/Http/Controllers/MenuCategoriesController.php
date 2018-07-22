@@ -3,16 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Model\MenuCategories;
+use App\Model\Menus;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
 
 class MenuCategoriesController extends Controller
 {
+    //权限
+    public function __construct()
+    {
+        //未登录的用户只能浏览首页
+        $this->middleware('auth',[
+            'except'=>['index']
+        ]);
+    }
+
     //用户列表
     public function index()//搜索分页时需要用到
     {
-
-        $rows = MenuCategories::all();
+        //>>1.获取当前用户信息
+        $row = Auth::user();
+        //获得当前的用户下的店铺
+        $rows = MenuCategories::all()->where('shop_id',$row->shop_id);
         return view('menucategories.index',compact('rows'));
     }
     //添加商家
@@ -44,7 +57,7 @@ class MenuCategoriesController extends Controller
             'name'=>$request->name,
             'shop_id'=>$request->shop_id,
             'description'=>$request->description,
-            'is_selected'=>1,
+            'is_selected'=>$request->is_selected,
             'type_accumulation'=>$type_accumulation
         ]);
         //>>3.返回首页
@@ -75,6 +88,16 @@ class MenuCategoriesController extends Controller
             'description.required'=>'描述必须选择',
             'is_selected.required'=>'默认分类必须选择'
         ]);
+        //如果传入的状态默认菜单为真
+        if($request->is_selected){
+            $row = auth()->user()->shop_id;
+            $rows = MenuCategories::where([['shop_id',$row],['is_selected',1]])->get();
+            foreach ($rows as $val){
+                $val->update([
+                    'is_selected'=>0
+                ]);
+            }
+        }
         //>>2.修改数据
         $menucategory->update([
             'name'=>$request->name,
@@ -87,7 +110,13 @@ class MenuCategoriesController extends Controller
 
     public function destroy(Request $request,MenuCategories $menucategory)
     {
-        $menucategory->delete();
-        return redirect()->route('menucategories.index')->with('success','删除分类成功');
+
+//        $result = $menucategory->all()->where($menucategory->id,Menus::all()->category_id);
+        $row =Menus::where('category_id',$menucategory->id)->count();
+        if (!$row){
+            $menucategory->delete();
+            return redirect()->route('menucategories.index')->with('success','删除分类成功');
+        }
+        return redirect()->back()->with('danger','只能删除空菜品分类');
     }
 }

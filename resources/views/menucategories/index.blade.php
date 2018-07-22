@@ -1,11 +1,8 @@
 @extends('default')
 @section('contents')
-    <ul class="nav nav-tabs">
-        <li role="presentation" class="active"><a href="#">小吃</a></li>
-        <li role="presentation" ><a href="#">快餐</a></li>
-        <li role="presentation"><a href="#">美食</a></li>
-    </ul>
-
+    <form action="{{route('menucategories.create')}}" method="get">
+        <button type="submit" class="btn btn-primary">添加菜品分类</button>
+    </form>
     <table class="table table-striped">
         <tr>
             <th>编号</th>
@@ -19,7 +16,7 @@
             <tr>
                 <td>{{$row->id}}</td>
                 <td>{{$row->name}}</td>
-                <td>{{$row->shop_id}}</td>
+                <td>{{$row->shops->shop_name}}</td>
                 <td>{{$row->description}}</td>
                 <td>{{$row->is_selected}}</td>
                 <td>
