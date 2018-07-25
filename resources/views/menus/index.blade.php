@@ -1,14 +1,30 @@
 @extends('default')
 @section('contents')
-    {{--<ul class="nav nav-tabs">--}}
-        {{--<li role="presentation" class="active"><a href="#">小吃</a></li>--}}
-        {{--<li role="presentation" ><a href="#">快餐</a></li>--}}
-        {{--<li role="presentation"><a href="#">美食</a></li>--}}
-    {{--</ul>--}}
-    <form action="{{route('menus.create')}}" method="get">
-        <button type="submit" class="btn btn-primary">添加菜品</button>
-    </form>
-    <table class="table table-striped">
+<div class="row">
+        <div class="col-xs-1">
+            @foreach($menuCategory as $val)
+            <a class="btn btn-default" href="{{route('menus.index',['id'=>$val->id])}}" role="button">{{$val->name}}</a>
+            @endforeach
+        </div>
+    <div class="col-xs-11">
+        <form action="" method="get">
+            {{csrf_field()}}
+                <div class="row">
+                    <div class="col-xs-2">
+                        <input type="text" name="keyword" class="form-control" placeholder="菜品名称">
+                    </div>
+                    <div class="col-xs-2">
+                        <input type="text" name="min" class="form-control" placeholder="最低价">
+                    </div>
+                    <div class="col-xs-2">
+                        <input type="text" name="max" class="form-control" placeholder="最高价">
+                    </div>
+                    <div class="col-xs-2">
+                        <button class="btn btn-default" type="submit">搜索</button>
+                    </div>
+                </div>
+            </form>
+        <table class="table table-striped">
         <tr>
             <th>编号</th>
             <th>图片</th>
@@ -41,6 +57,11 @@
             </tr>
         @endforeach
     </table>
+        <form action="{{route('menus.create')}}" method="get">
+        <button type="submit" class="btn btn-primary">添加菜品</button>
+    </form>
+    </div>
+</div>
 @endsection
 
 

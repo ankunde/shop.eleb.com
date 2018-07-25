@@ -11,5 +11,6 @@ class Users extends Model
     public function shops()
     {
         return $this->hasOne(Shops::class,'id','shop_id');
+//        return $this->belongsTo(Shops::class,'shop_id','id');
     }
 }

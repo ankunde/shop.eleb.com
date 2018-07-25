@@ -31,7 +31,7 @@
                 <button type="submit" class="btn btn-default">搜美食</button>
             </form>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#">注册</a></li>
+                <li><a href="{{route('users.create')}}">注册</a></li>
                 @auth
                 <li>
                 <li class="dropdown">

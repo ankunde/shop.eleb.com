@@ -23,11 +23,22 @@ Route::post('/login/{user}/save', 'SessionController@save')->name('save');//接�
 
 
 Route::get('users','UsersController@index')->name('users.index');//用户表单
-
+Route::get('/users/create', 'UsersController@create')->name('users.create');//显示添加表单
+Route::post('/users', 'UsersController@store')->name('users.store');//接收添加表单数据
 //资源重定向
 Route::resource('menucategories', 'MenuCategoriesController');//菜品分类
 Route::resource('menus','MenusController');//菜品表
 
+
+//商户图片上传
+Route::post('upload',function (){
+   $storage = \Illuminate\Support\Facades\Storage::disk('oss');
+   $puthimg = $storage->url($storage->putFile('shop',request()->file('file')));
+   return ['puthimg'=>$puthimg];
+})->name('upload');
+
+Route::get('activity','ActivityController@index')->name('activity.index');
+Route::get('activity/{activity}','ActivityController@show')->name('activity.show');
 /*
 Route::get('/users', 'UsersController@index')->name('users.index');//用户列表
 Route::get('/users/{user}', 'UsersController@show')->name('users.show');//查看单个用户信息

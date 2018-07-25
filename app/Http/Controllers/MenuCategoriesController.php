@@ -18,10 +18,10 @@ class MenuCategoriesController extends Controller
             'except'=>['index']
         ]);
     }
-
     //用户列表
-    public function index()//搜索分页时需要用到
+    public function index(Request $request)//搜索分页时需要用到
     {
+//        dd($request);
         //>>1.获取当前用户信息
         $row = Auth::user();
         //获得当前的用户下的店铺

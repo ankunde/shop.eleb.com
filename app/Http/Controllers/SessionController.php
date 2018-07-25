@@ -30,17 +30,21 @@ class SessionController extends Controller
             'captcha.required'=>'验证码必须填写',
             'captcha.captcha'=>'验证码填写不正确'
         ]);
-        //>>2.审核数据
-        $user = Users::where('name',$request->name)->first();//用户数据
-//        if (!$row){
+//        //>>2.审核数据
+//        $user = Users::where('name',$request->name)->first();//用户数据
+//        if (!$user){
 //            return redirect()->back()->with('danger','用户名不存在');
 //        }
-        $shop = Shops::where('id',$user->shop_id)->first();//用户商铺数据
-        if(!$user->status || !$shop->status){
-            return redirect()->back()->with('danger','对不起的,你的账户目前处于禁用,不能登录');
-        }
-//        dd($row->status);
-        if (Auth::attempt(['name'=>$request->name,'password'=>$request->password],$request->status)){
+//
+//        if(!$user->status || !$shop->status){
+//            return redirect()->back()->with('danger','对不起的,你的账户目前处于禁用,不能登录');
+//        }
+        if (Auth::attempt(['name'=>$request->name,'password'=>$request->password])){
+            $shop = Shops::where('id',auth()->user()->shop_id)->first();//用户商铺数据
+            if(!auth()->user()->status || !$shop->status){
+                    Auth::logout();
+                    return redirect()->back()->with('danger','对不起的,你的账户目前处于禁用,不能登录');
+            }
             return redirect()->route('users.index')->with('success','登录成功');
         }else{
             return redirect()->back()->with('danger','用户名或者密码错误');

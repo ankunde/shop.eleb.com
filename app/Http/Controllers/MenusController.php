@@ -6,6 +6,7 @@ use App\Model\MenuCategories;
 use App\Model\Menus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class MenusController extends Controller
@@ -17,10 +18,34 @@ class MenusController extends Controller
         ]);
     }
     //用户列表
-    public function index()//搜索分页时需要用到
+    public function index(Request $request)//搜索分页时需要用到
     {
-        $rows = Menus::all();
-        return view('menus.index',compact('rows'));
+        //分类表
+        $men = MenuCategories::where('shop_id',auth()->user()->shop_id)->first();
+        if(!$men){
+            return redirect()->route('menucategories.index')->with('danger','请先在这里添加菜品分类');
+        }
+        $menuCategory = MenuCategories::where('shop_id',auth()->user()->shop_id)->get();
+        //无搜索条件时
+        $search = [['shop_id', auth()->user()->shop_id]];
+        if($request->id!=null){
+            $search[] = ['category_id',$request->id];
+        }
+        if($request->keyword!=null){
+            $search[] = ['goods_name','like',"%{$request->keyword}%"];
+        }
+        if($request->min!=null){
+            $search[] = ['goods_price','>=',"$request->min"];
+        }
+        if ($request->max!=null){
+            $search[] = ['goods_price','<=',"$request->max"];
+        }
+        $where['keyword'] =$request->keyword;
+        $where['id'] =$request->id;
+        $where['min'] =$request->min;
+        $where['max'] =$request->max;
+        $rows = Menus::where($search)->paginate(5);
+        return view('menus.index',compact('rows','menuCategory'));
     }
     //添加商家
     public function create()
@@ -64,8 +89,6 @@ class MenusController extends Controller
 
         $user = Auth::user()->shop_id;
 
-        //>>1.1处理上传图片
-        $path = $request->file('goods_img')->store('/public/'.date('Y-m-d'));
         //>>2.存入数据
         Menus::create([
             'goods_name'=>$request->goods_name,
@@ -79,7 +102,7 @@ class MenusController extends Controller
             'tips'=>$request->tips,
             'satisfy_count'=>$request->satisfy_count,
             'satisfy_rate'=>$request->satisfy_rate,
-            'goods_img'=>$path
+            'goods_img'=>$request->goods_img
         ]);
         //>>3.返回首页
         return redirect()->route('menus.index')->with("success","分类添加成功");
@@ -128,7 +151,6 @@ class MenusController extends Controller
             'satisfy_rate'=>$request->satisfy_rate
         ];
         if($path){
-            $path = $request->file('img')->store('/public/'.date('Y-m-d'));
             $data['goods_img']=$path;
         }
         //>>2.修改数据
