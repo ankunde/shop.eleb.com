@@ -1,0 +1,50 @@
+@extends('default')
+@section('contents')
+    <table class="table table-striped" width="80%">
+
+        <tr>
+            <td>编号</td>
+            <td>{{$order->id}}</td>
+        </tr>
+        <tr>
+            <td>用户id</td>
+            <td>{{$order->user_id}}</td>
+        </tr>
+        <tr>
+            <td>商户id</td>
+            <td>{{$order->shop_id}}</td>
+        </tr>
+        <tr>
+            <td>订单编号</td>
+            <td>
+               {{$order->sn}}
+            </td>
+        </tr>
+        <tr>
+            <td>电话</td>
+            <td>{{$order->tel}}</td>
+        </tr>
+        <tr>
+            <td>用户名</td>
+            <td>{{$order->name}}</td>
+        </tr>
+        <tr>
+            <td>价格</td>
+            <td>{{$order->total}}</td>
+        </tr>
+        <tr>
+            <td>状态</td>
+            <td>{{$order->status}}</td>
+        </tr>
+        <tr>
+            <td>交易号</td>
+            <td>{{$order->out_trade_no}}</td>
+        </tr>
+        <tr>
+            <td>创建时间</td>
+            <td>{{$order->created_at}}</td>
+        </tr>
+    </table>
+@endsection
+
+

@@ -39,6 +39,18 @@ Route::post('upload',function (){
 
 Route::get('activity','ActivityController@index')->name('activity.index');
 Route::get('activity/{activity}','ActivityController@show')->name('activity.show');
+
+
+/*******************订单表***********************/
+Route::get('orders','OrdersController@index')->name('orders.index');//订单列表
+Route::get('orders/count','OrdersController@count')->name('orders.count');//统计
+Route::get('orders/{order}','OrdersController@show')->name('orders.show');//指定订单列表
+/*******************订单表***********************/
+/*******************商品统计**********************/
+Route::get('orders/menus/lists','OrdersController@lists')->name('order.lists');//商品列表
+/*******************商品统计**********************/
+
+
 /*
 Route::get('/users', 'UsersController@index')->name('users.index');//用户列表
 Route::get('/users/{user}', 'UsersController@show')->name('users.show');//查看单个用户信息
