@@ -50,7 +50,10 @@ Route::get('orders/{order}','OrdersController@show')->name('orders.show');//指�
 Route::get('orders/menus/lists','OrdersController@lists')->name('order.lists');//商品列表
 /*******************商品统计**********************/
 
-
+Route::get('event','EventController@index')->name('event.index');//活动列表
+Route::get('event/{event}','EventController@show')->name('event.show');//查看活动
+Route::post('event/{event}','EventController@status')->name('event.status');//报名活动
+Route::get('event/{event}/lottery','EventController@lottery')->name('event.lottery');//查看开奖结果
 /*
 Route::get('/users', 'UsersController@index')->name('users.index');//用户列表
 Route::get('/users/{user}', 'UsersController@show')->name('users.show');//查看单个用户信息
