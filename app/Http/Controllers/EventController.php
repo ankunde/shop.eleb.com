@@ -22,22 +22,31 @@ class EventController extends Controller
      * 活动列表
      */
     public function index(){
-        $event = Event::all();
-        return view('event.index',compact('event'));
+            $event = Event::all();
+            $content = view('event.index',compact('event'));
+            return $content;
     }
     /**
      * 查看活动
      */
     public function show(Request $request,Event $event){
-        return view('event.show',compact('event'));
+            $content = view('event.show',compact('event'));
+            return $content;
     }
     /**
      * 报名活动
      */
     public function status(Request $request,Event $event)
     {
-        //>>1.查询报名的活动
+        //>>1.开启Redis,并且报名
+        $signup_num = Redis::incr('signup_num');
+        //>>2.查询报名的活动
         $event = Event::where('id',$event->id)->first();
+        //>>2.判断报名人数是否超过上限
+        if($signup_num>$event->signup_num){
+            Redis::decr('signup_num');
+            return redirect()->back()->with('danger','该活动人数已达上限');
+        }
         //>>2.查询当家商户id
         $user_id = Auth::user()->id;
         //>>3.判断活动人数

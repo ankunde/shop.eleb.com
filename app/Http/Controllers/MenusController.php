@@ -20,6 +20,11 @@ class MenusController extends Controller
     //用户列表
     public function index(Request $request)//搜索分页时需要用到
     {
+        //判断是否登录
+        if(!Auth::check()){
+            return redirect()->route('login')->with('danger','您尚未登录');
+        }
+
         //分类表
         $men = MenuCategories::where('shop_id',auth()->user()->shop_id)->first();
         if(!$men){
@@ -31,14 +36,27 @@ class MenusController extends Controller
         if($request->id!=null){
             $search[] = ['category_id',$request->id];
         }
-        if($request->keyword!=null){
-            $search[] = ['goods_name','like',"%{$request->keyword}%"];
-        }
         if($request->min!=null){
             $search[] = ['goods_price','>=',"$request->min"];
         }
         if ($request->max!=null){
             $search[] = ['goods_price','<=',"$request->max"];
+        }
+        if($request->keyword!=null){
+//            $search[] = ['goods_name','like',"%{$request->keyword}%"];
+            $cl = new \App\SphinxClient();
+            $cl->SetServer ( '127.0.0.1', 9312);
+            $cl->SetConnectTimeout ( 10 );
+            $cl->SetArrayResult ( true );
+            $cl->SetMatchMode ( SPH_MATCH_EXTENDED2);
+            $cl->SetLimits(0, 1000);
+            $info = request()->keyword;
+            $res= $cl->Query($info, 'mysql');//$search[]
+            $rows=[];
+            foreach ($res['matches'] as $value){
+                $rows[] = Menus::where('id',$value['id'])->first();
+            }
+            return view('menus.index',compact('rows','menuCategory'));
         }
         $where['keyword'] =$request->keyword;
         $where['id'] =$request->id;
